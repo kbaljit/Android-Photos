@@ -1,54 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="photos.photosandroid.Photos">
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="368dp"
+        android:layout_width="wrap_content"
         android:layout_height="495dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent">
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:baselineAligned="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:baselineAligned="false"
             android:weightSum="1">
 
             <ImageButton
-                android:id="@+id/delete"
+                android:id="@+id/deletephoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.31"
+                android:layout_weight="0.32"
                 app:srcCompat="@android:drawable/ic_menu_delete" />
 
             <ImageButton
-                android:id="@+id/rename"
+                android:id="@+id/addphoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.35"
-                app:srcCompat="@android:drawable/ic_menu_edit" />
+                app:srcCompat="@android:drawable/ic_input_add" />
 
             <ImageButton
-                android:id="@+id/add"
+                android:id="@+id/slideshow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.33"
-                app:srcCompat="@android:drawable/ic_input_add" />
+                android:layout_weight="0.29"
+                app:srcCompat="@android:drawable/ic_menu_slideshow" />
 
         </LinearLayout>
 
-        <ListView
+        <GridView
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
