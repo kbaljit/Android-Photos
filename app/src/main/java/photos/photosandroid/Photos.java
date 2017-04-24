@@ -31,7 +31,7 @@ public class Photos extends AppCompatActivity {
         for(int i=0; i<albums.size(); i++){
             albumNames.add(albums.get(i).getTitle());
         }
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this, R.layout.activity_photos, albumNames);
+        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, albumNames);
         albumList.setAdapter(adapter);
 
 
