@@ -1,21 +1,30 @@
 package photos.photosandroid;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Photos extends AppCompatActivity {
+public class Photos extends AppCompatActivity implements Serializable {
     ListView albumList;
     PhotoLibrary photolib = null;
     ArrayAdapter<String> adapter;
+    final Context context=this;
+    private String title="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +38,8 @@ public class Photos extends AppCompatActivity {
             e.printStackTrace();
         }
         albumList= (ListView) findViewById(R.id.AlbumList);
-        ArrayList<Album> albums=photolib.Albums;
-        ArrayList<String> albumNames=new ArrayList<>();
+        final ArrayList<Album> albums=photolib.Albums;
+        final ArrayList<String> albumNames=new ArrayList<>();
         for(int i=0; i<albums.size(); i++){
             albumNames.add(albums.get(i).getTitle());
         }
@@ -41,7 +50,6 @@ public class Photos extends AppCompatActivity {
         albumList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String entry=(String) parent.getAdapter().getItem(position);
                     displayAlbum(position);
             }
         });
@@ -54,7 +62,55 @@ public class Photos extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
+                AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                builder.setTitle("Enter Album Name");
+                final EditText input=new EditText(context);
+                builder.setView(input);
 
+                builder.setPositiveButton("CREATE", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which){
+                        title=input.getText().toString();
+                        boolean duplicate=false;
+                        for(int i=0;i<albums.size();i++){
+                            if(title.equals(albums.get(i).getTitle())){
+                                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                                alertDialog.setTitle("Alert");
+                                alertDialog.setMessage("Duplicate Album Name, please try again");
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                duplicate=true;
+                                alertDialog.show();
+                            }
+                        }
+                        if(duplicate==false) {
+                            Album insert = new Album(title);
+                            albums.add(insert);
+                            photolib.setAlbums(albums);
+                            Log.d("myTag", "Hello");
+                            try {
+                                PhotoLibrary.writeApp(photolib);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            albumNames.add(title);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which){
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
             }
         });
 

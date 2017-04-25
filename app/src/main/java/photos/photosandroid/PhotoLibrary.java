@@ -1,5 +1,8 @@
 package photos.photosandroid;
-        import java.io.*;
+
+import android.content.Context;
+
+import java.io.*;
         import java.util.ArrayList;
 /**
  *
@@ -14,11 +17,13 @@ public class PhotoLibrary implements Serializable{
     ArrayList<Album> Albums;
     public static final String storeFile = "library.bin";
 
+
     /**
      * Initializes object with an admin and empty list of users
      */
     public PhotoLibrary(){
-            Albums=new ArrayList<>();
+
+        Albums=new ArrayList<>();
     }
 
     /**
@@ -49,6 +54,10 @@ public class PhotoLibrary implements Serializable{
         PhotoLibrary photoLib = (PhotoLibrary)ois.readObject();
         ois.close();
         return photoLib;
+    }
+
+    public void setAlbums(ArrayList<Album> albums){
+        Albums=albums;
     }
 
 }
