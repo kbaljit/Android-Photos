@@ -23,28 +23,24 @@
             android:weightSum="1">
 
             <ImageButton
-                android:id="@+id/imageButton6"
+                android:id="@+id/deleteButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.20"
-                app:srcCompat="@android:drawable/ic_menu_search" />
 
-            <ImageButton
-                android:id="@+id/delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.23"
+                android:layout_weight="0.31"
+                android:visibility="visible"
+
                 app:srcCompat="@android:drawable/ic_menu_delete" />
 
             <ImageButton
-                android:id="@+id/rename"
+                android:id="@+id/renameButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.23"
+                android:layout_weight="0.38"
                 app:srcCompat="@android:drawable/ic_menu_edit" />
 
             <ImageButton
-                android:id="@+id/add"
+                android:id="@+id/addButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.33"
@@ -53,6 +49,7 @@
         </LinearLayout>
 
         <ListView
+            android:id="@+id/AlbumList"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
