@@ -46,7 +46,7 @@ public class Photo implements Serializable{
      * @return The caption of photo
      */
     public String getTitle(){
-        return title;
+        return title; 
     }
 
     /**

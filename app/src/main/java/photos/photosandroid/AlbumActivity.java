@@ -26,7 +26,7 @@ public class AlbumActivity extends AppCompatActivity{
         photoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                //open display
+                //open display code here
             }
         });
     }

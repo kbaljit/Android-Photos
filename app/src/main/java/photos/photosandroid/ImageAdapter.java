@@ -20,7 +20,7 @@ public class ImageAdapter extends BaseAdapter {
     private ArrayList<Photo> photos;
 
     public ImageAdapter(Context c, ArrayList<Photo> photos) {
-        context = c;
+        this.context = c;
         this.photos = photos;
     }
 
