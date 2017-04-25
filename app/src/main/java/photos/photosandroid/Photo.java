@@ -16,7 +16,7 @@ import java.util.Date;
 public class Photo implements Serializable{
     private File image;
     private Calendar date;
-    private String caption;
+    private String title;
     private ArrayList<Tag> tags;
 
     /**
@@ -30,6 +30,7 @@ public class Photo implements Serializable{
         date.setTime(d);
         date.set(Calendar.MILLISECOND, 0);
         tags = new ArrayList<>();
+        title = image.getName();
     }
 
     /**
@@ -41,19 +42,11 @@ public class Photo implements Serializable{
     }
 
     /**
-     * Sets caption of photo
-     * @param caption New caption
-     */
-    public void setCaption(String caption){
-        this.caption = caption;
-    }
-
-    /**
      * Returns caption of photo
      * @return The caption of photo
      */
-    public String getCaption(){
-        return caption;
+    public String getTitle(){
+        return title;
     }
 
     /**
