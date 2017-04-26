@@ -31,6 +31,8 @@ public class Photos extends AppCompatActivity implements Serializable {
     ArrayAdapter<String> adapter;
     final Context context=this;
     private String title="";
+    private String rename="";
+    private Album temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +40,7 @@ public class Photos extends AppCompatActivity implements Serializable {
         setContentView(R.layout.activity_photos);
         try {
             String path=context.getFilesDir()+"/"+"library.bin";
-            photolib = readApp(new File(context.getFilesDir()+"/"+"library.bin"));
+            photolib = readApp(new File(path));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -54,12 +56,7 @@ public class Photos extends AppCompatActivity implements Serializable {
         adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, albumNames);
         albumList.setAdapter(adapter);
 
-        albumList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    displayAlbum(position);
-            }
-        });
+        setListener();
 
 
         ImageButton addButton=(ImageButton) findViewById(R.id.addButton);
@@ -98,7 +95,6 @@ public class Photos extends AppCompatActivity implements Serializable {
                             Album insert = new Album(title);
                             albums.add(insert);
                             photolib.setAlbums(albums);
-                            Log.d("myTag", "Hello");
                             try {
                                 writeApp(photolib, context);
                             } catch (IOException e) {
@@ -125,12 +121,72 @@ public class Photos extends AppCompatActivity implements Serializable {
             @Override
             public void onClick(View view){
 
+                albumList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        albums.remove(position);
+                        albumNames.remove(position);
+                        adapter.notifyDataSetChanged();
+                        photolib.setAlbums(albums);
+
+                        try {
+                            writeApp(photolib, context);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        setListener();
+
+                    }
+
+                });
             }
+
         });
 
         renameButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
+                albumList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                        temp=albums.get(position);
+
+                        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                        builder.setTitle("Enter Album Name");
+                        final EditText input=new EditText(context);
+                        builder.setView(input);
+
+                        builder.setPositiveButton("RENAME", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which){
+                                rename=input.getText().toString();
+                                temp.setTitle(rename);
+                                albums.set(position, temp );
+                                photolib.setAlbums(albums);
+                                try {
+                                    writeApp(photolib, context);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                albumNames.set(position, rename);
+                                adapter.notifyDataSetChanged();
+
+                            }
+                        });
+
+                        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which){
+                                dialog.cancel();
+                            }
+                        });
+
+                        builder.show();
+                        setListener();
+
+                    }
+
+                });
 
             }
         });
@@ -144,8 +200,15 @@ public class Photos extends AppCompatActivity implements Serializable {
             Intent intent=new Intent(this, DisplayAlbum.class);
             intent.putExtras(bundle);
             startActivity(intent);
+    }
 
-
+    public void setListener(){
+        albumList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                displayAlbum(position);
+            }
+        });
     }
 
     public static void writeApp(PhotoLibrary photoLib, Context context) throws IOException {
@@ -154,12 +217,12 @@ public class Photos extends AppCompatActivity implements Serializable {
         oos.writeObject(photoLib);
         oos.close();
     }
+
     public static PhotoLibrary readApp(File F) throws IOException, ClassNotFoundException {
         if(F.length() == 0){
             return new PhotoLibrary();
         }
-        ObjectInputStream ois = new ObjectInputStream(
-                new FileInputStream(F));
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(F));
         PhotoLibrary photoLib = (PhotoLibrary)ois.readObject();
         ois.close();
         return photoLib;
