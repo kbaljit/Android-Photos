@@ -3,6 +3,7 @@ package photos.photosandroid;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,7 +16,12 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -31,7 +37,8 @@ public class Photos extends AppCompatActivity implements Serializable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photos);
         try {
-            photolib = PhotoLibrary.readApp();
+            String path=context.getFilesDir()+"/"+"library.bin";
+            photolib = readApp(new File(context.getFilesDir()+"/"+"library.bin"));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -93,7 +100,7 @@ public class Photos extends AppCompatActivity implements Serializable {
                             photolib.setAlbums(albums);
                             Log.d("myTag", "Hello");
                             try {
-                                PhotoLibrary.writeApp(photolib);
+                                writeApp(photolib, context);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -140,4 +147,23 @@ public class Photos extends AppCompatActivity implements Serializable {
 
 
     }
+
+    public static void writeApp(PhotoLibrary photoLib, Context context) throws IOException {
+        File outFile = new File(context.getFilesDir(), "library.bin");
+        ObjectOutput oos = new ObjectOutputStream(new FileOutputStream(outFile));
+        oos.writeObject(photoLib);
+        oos.close();
+    }
+    public static PhotoLibrary readApp(File F) throws IOException, ClassNotFoundException {
+        if(F.length() == 0){
+            return new PhotoLibrary();
+        }
+        ObjectInputStream ois = new ObjectInputStream(
+                new FileInputStream(F));
+        PhotoLibrary photoLib = (PhotoLibrary)ois.readObject();
+        ois.close();
+        return photoLib;
+    }
+
+
 }

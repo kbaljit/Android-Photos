@@ -1,6 +1,7 @@
 package photos.photosandroid;
 
 import android.content.Context;
+import android.os.Environment;
 
 import java.io.*;
         import java.util.ArrayList;
@@ -31,9 +32,11 @@ public class PhotoLibrary implements Serializable{
      * @param photoLib instance of PhotoLibrary
      * @throws IOException
      */
-    public static void writeApp(PhotoLibrary photoLib) throws IOException {
-        ObjectOutputStream oos = new ObjectOutputStream(
-                new FileOutputStream(storeFile));
+    public static void writeApp(PhotoLibrary photoLib, Context context) throws IOException {
+
+       // FileOutputStream FOS=context.openFileOutput(storeFile, Context.MODE_PRIVATE);
+        File outFile = new File(Environment.getExternalStorageDirectory(), "library.bin");
+        ObjectOutput oos = new ObjectOutputStream(new FileOutputStream(outFile));
         oos.writeObject(photoLib);
         oos.close();
     }

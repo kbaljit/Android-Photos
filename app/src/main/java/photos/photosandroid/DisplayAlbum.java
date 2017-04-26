@@ -9,7 +9,7 @@ public class DisplayAlbum extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_display_album);
+        setContentView(R.layout.album);
 
         Intent intent=getIntent();
         Bundle b=intent.getExtras();
