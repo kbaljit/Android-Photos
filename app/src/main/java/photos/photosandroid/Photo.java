@@ -1,9 +1,12 @@
 package photos.photosandroid;
 
+import android.graphics.Bitmap;
 import android.media.Image;
+import android.net.Uri;
 
 import java.io.File;
 import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,16 +19,16 @@ import java.util.Date;
  *Represents an Photo object with image, date, caption, and tags
  */
 public class Photo implements Serializable{
-    private Image image;
+    private Bitmap bitmap;
     private String title;
     private ArrayList<Tag> tags;
 
     /**
      * Initializes a photo object with given image
-     * @param image Image file
+     * @param uri file
      */
-    public Photo(Image image){
-        this.image = image;
+    public Photo(Bitmap bitmap){
+        this.bitmap = bitmap;
         tags = new ArrayList<>();
     }
 
@@ -33,9 +36,9 @@ public class Photo implements Serializable{
      * Returns the image file
      * @return Image file
      */
-    public Image getImage(){
+    public Bitmap getImage(){
 
-        return this.image;
+        return this.bitmap;
     }
 
     /**
