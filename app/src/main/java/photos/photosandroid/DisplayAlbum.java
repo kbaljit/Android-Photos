@@ -15,6 +15,7 @@ import java.io.ObjectOutputStream;
 
 public class DisplayAlbum extends AppCompatActivity {
     PhotoLibrary photolib=null;
+    final Context context=this;
 
 
     @Override

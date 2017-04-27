@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 public class Photos extends AppCompatActivity implements Serializable {
     ListView albumList;
-    PhotoLibrary photolib = null;
+    PhotoLibrary photolib = new PhotoLibrary();
     ArrayAdapter<String> adapter;
     final Context context=this;
     private String title="";
@@ -47,7 +47,7 @@ public class Photos extends AppCompatActivity implements Serializable {
             e.printStackTrace();
         }
         albumList= (ListView) findViewById(R.id.AlbumList);
-        final ArrayList<Album> albums=photolib.Albums;
+        final ArrayList<Album> albums=photolib.getAlbums();
         final ArrayList<String> albumNames=new ArrayList<>();
         for(int i=0; i<albums.size(); i++){
             albumNames.add(albums.get(i).getTitle());

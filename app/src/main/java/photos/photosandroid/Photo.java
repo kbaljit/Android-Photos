@@ -1,5 +1,7 @@
 package photos.photosandroid;
 
+import android.media.Image;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,8 +16,7 @@ import java.util.Date;
  *Represents an Photo object with image, date, caption, and tags
  */
 public class Photo implements Serializable{
-    private File image;
-    private Calendar date;
+    private Image image;
     private String title;
     private ArrayList<Tag> tags;
 
@@ -23,21 +24,17 @@ public class Photo implements Serializable{
      * Initializes a photo object with given image
      * @param image Image file
      */
-    public Photo(File image){
+    public Photo(Image image){
         this.image = image;
-        date = Calendar.getInstance();
-        Date d = new Date(image.lastModified());
-        date.setTime(d);
-        date.set(Calendar.MILLISECOND, 0);
         tags = new ArrayList<>();
-        title = image.getName();
     }
 
     /**
      * Returns the image file
      * @return Image file
      */
-    public File getImage(){
+    public Image getImage(){
+
         return this.image;
     }
 
@@ -46,25 +43,10 @@ public class Photo implements Serializable{
      * @return The caption of photo
      */
     public String getTitle(){
-        return title; 
+
+        return title;
     }
 
-    /**
-     * Returns date the photo was taken
-     * @return Date of photo
-     */
-    public Calendar getDate(){
-        return date;
-    }
-
-    /**
-     * Return the date as string
-     * @return date as string
-     */
-    public String getDateString(){
-        return (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.DAY_OF_MONTH) + "/" +
-                date.get(Calendar.YEAR) + "";
-    }
 
     /**
      * Adds new tag to photo
@@ -88,6 +70,7 @@ public class Photo implements Serializable{
      * @return Tags
      */
     public ArrayList<Tag> getTags(){
+
         return tags;
     }
 
@@ -96,6 +79,7 @@ public class Photo implements Serializable{
      * @param Tag ArrayList of tags
      */
     public void setTags(ArrayList<Tag> Tag){
+
         this.tags=Tag;
     }
 

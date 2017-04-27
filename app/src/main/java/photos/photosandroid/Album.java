@@ -73,53 +73,14 @@ public class Album implements Serializable{
     }
 
     /**
-     * Finds photos within the given range
-     * @param date1 Start date
-     * @param date2 End date
-     * @return All photos within the range
-     */
-    public ArrayList<Photo> getPhotosByDate(Calendar date1, Calendar date2){
-        ArrayList<Photo> matches = new ArrayList<>();
-
-        for(int i = 0; i < photos.size(); i++){
-            if((photos.get(i).getDate().after(date1) && photos.get(i).getDate().before(date2)) ||
-                    (photos.get(i).getDate().compareTo(date1) == 0) ||
-                    (photos.get(i).getDate().compareTo(date2) == 0)){
-                matches.add(photos.get(i));
-            }
-        }
-        return matches;
-    }
-
-    /**
      * Sets title to param
      * @param text New title
      */
     public void setTitle(String text) {
+
         this.title = text;
     }
 
-    /**
-     * Returns the date range of all photos in the album
-     * @return String used to represent the date range
-     */
-    public String dateRange(){
-        Calendar min = photos.get(0).getDate();
-        Calendar max = photos.get(0).getDate();
-        int minP = 0;
-        int maxP = 0;
-        for(int i = 1; i < photos.size(); i++){
-            if(photos.get(i).getDate().before(min)){
-                min = photos.get(i).getDate();
-                minP = i;
-            }
-            if(photos.get(i).getDate().after(max)){
-                max = photos.get(i).getDate();
-                maxP = i;
-            }
-        }
 
-        return photos.get(minP).getDateString() + " - "+ photos.get(maxP).getDateString();
-    }
 }
 

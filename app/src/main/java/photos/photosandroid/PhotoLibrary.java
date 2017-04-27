@@ -4,7 +4,8 @@ import android.content.Context;
 import android.os.Environment;
 
 import java.io.*;
-        import java.util.ArrayList;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 /**
  *
  * @author Baljit Kaur
@@ -15,20 +16,28 @@ import java.io.*;
  */
 public class PhotoLibrary implements Serializable{
     private static final long serialVersionUID = 1L;
-    ArrayList<Album> Albums;
-    public static final String storeFile = "library.bin";
+    private ArrayList<Album> Albums;
 
 
     /**
      * Initializes object with an album list
      */
     public PhotoLibrary(){
-        Albums=new ArrayList<>();
+
+        this.Albums=new ArrayList<>();
     }
 
 
-    public void setAlbums(ArrayList<Album> albums){
-        Albums=albums;
+    public void setAlbums(ArrayList<Album> Albums){
+
+        this.Albums=Albums;
+    }
+
+    public ArrayList<Album> getAlbums(){
+        if(Albums==null){
+            return new ArrayList<Album>();
+        }
+        return Albums;
     }
 
 }

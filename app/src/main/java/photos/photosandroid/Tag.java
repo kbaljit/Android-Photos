@@ -44,14 +44,16 @@ public class Tag implements Serializable{
      * @param newTagName New tag name
      */
     public void setTagName(String newTagName){
+
         this.tagName = newTagName;
     }
 
     /**
      * Sets new tag value
-     * @param newTagName New tag value
+     * @param newTagValue New tag value
      */
     public void setTagValue(String newTagValue){
+
         this.tagName = newTagValue;
     }
 
