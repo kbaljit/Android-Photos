@@ -19,7 +19,7 @@ import java.util.Date;
  *Represents an Photo object with image, date, caption, and tags
  */
 public class Photo implements Serializable{
-    private byte[] bitmap;
+    private String bitmap;
     private String title;
     private ArrayList<Tag> tags;
 
@@ -27,7 +27,7 @@ public class Photo implements Serializable{
      * Initializes a photo object with given image
      * @param bitmap
      */
-    public Photo(byte[] bitmap){
+    public Photo(String bitmap){
         this.bitmap = bitmap;
         tags = new ArrayList<>();
     }
@@ -36,7 +36,7 @@ public class Photo implements Serializable{
      * Returns the image file
      * @return Image file
      */
-    public byte[] getImage(){
+    public String getImage(){
 
         return this.bitmap;
     }

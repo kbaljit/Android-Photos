@@ -31,7 +31,7 @@ public class displayPhoto extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.photo);
 
-            //Simply a test Photo, will not actually work. Previous Activity should create photos from Bitmap
+            /*Simply a test Photo, will not actually work. Previous Activity should create photos from Bitmap
             byte[] testPhoto=null;
             Photo test=new Photo(testPhoto);
 
@@ -49,7 +49,7 @@ public class displayPhoto extends AppCompatActivity {
                 row.addView(nameView);
                 row.addView(valueView);
                 TTable.addView(row);
-            }
+            }*/
 
 
 

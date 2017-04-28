@@ -119,12 +119,10 @@ public class AlbumActivity extends AppCompatActivity{
         if (resultCode == RESULT_OK) {
             if (requestCode == 1 && data != null && data.getData() != null) {
                 Uri selectedImageUri = data.getData();
+                String stringUri=selectedImageUri.toString();
                 selectedImagePath = getPath(selectedImageUri);
                 Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath);
-                ByteArrayOutputStream stream= new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] storeBitmap=stream.toByteArray();
-                Photo photo = new Photo(storeBitmap);
+                Photo photo = new Photo(stringUri);
                 photos.add(photo);
                 photolib.getAlbums().get(pos).getPhotos().add(photo);
                 try {
@@ -236,7 +234,11 @@ public class AlbumActivity extends AppCompatActivity{
             ImageView imageView;
             if (convertView == null) {
                 imageView = new ImageView(context);
-                Bitmap bitmap =BitmapFactory.decodeByteArray(photos.get(position).getImage(), 0, photos.get(position).getImage().length);
+                Uri uri;
+                String uriString=photos.get(position).getImage();
+                uri=Uri.parse(uriString);
+                String filePath=getPath(uri);
+                Bitmap bitmap =BitmapFactory.decodeFile(filePath);
                 imageView.setImageBitmap(bitmap);
                 imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
