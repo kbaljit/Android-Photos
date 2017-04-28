@@ -197,7 +197,7 @@ public class Photos extends AppCompatActivity implements Serializable {
             String entry=(String) adapter.getItem(pos);
             bundle.putString("ALBUM_NAME", entry);
             bundle.putSerializable("PHOTO_LIB", photolib );
-            Intent intent=new Intent(this, DisplayAlbum.class);
+            Intent intent=new Intent(this, AlbumActivity.class);
             intent.putExtras(bundle);
             startActivity(intent);
     }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -25,29 +26,26 @@
                 android:id="@+id/deletephoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.32"
+                android:layout_weight="0.53"
+                android:longClickable="false"
+                android:visibility="invisible"
                 app:srcCompat="@android:drawable/ic_menu_delete" />
 
             <ImageButton
                 android:id="@+id/addphoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.35"
+                android:layout_weight="0.48"
                 app:srcCompat="@android:drawable/ic_input_add" />
-
-            <ImageButton
-                android:id="@+id/slideshow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.29"
-                app:srcCompat="@android:drawable/ic_menu_slideshow" />
 
         </LinearLayout>
 
         <GridView
             android:id="@+id/gridview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:longClickable="true" />
 
     </LinearLayout>
 
