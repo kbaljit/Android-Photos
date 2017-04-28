@@ -26,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -56,6 +57,7 @@ public class AlbumActivity extends AppCompatActivity{
         Bundle b = intent.getExtras();
         String Album_Name = b.getString("ALBUM_NAME");
         photolib = (PhotoLibrary) b.getSerializable("PHOTO_LIB");
+        Log.d("Debug", photolib.getAlbums().get(0).getTitle());
 
         for (int i = 0; i < photolib.getAlbums().size(); i++) {
             if (photolib.getAlbums().get(i).getTitle().equals(Album_Name)) {
@@ -119,7 +121,10 @@ public class AlbumActivity extends AppCompatActivity{
                 Uri selectedImageUri = data.getData();
                 selectedImagePath = getPath(selectedImageUri);
                 Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath);
-                Photo photo = new Photo(bitmap);
+                ByteArrayOutputStream stream= new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] storeBitmap=stream.toByteArray();
+                Photo photo = new Photo(storeBitmap);
                 photos.add(photo);
                 photolib.getAlbums().get(pos).getPhotos().add(photo);
                 try {
@@ -231,7 +236,7 @@ public class AlbumActivity extends AppCompatActivity{
             ImageView imageView;
             if (convertView == null) {
                 imageView = new ImageView(context);
-                Bitmap bitmap = photos.get(position).getImage();
+                Bitmap bitmap =BitmapFactory.decodeByteArray(photos.get(position).getImage(), 0, photos.get(position).getImage().length);
                 imageView.setImageBitmap(bitmap);
                 imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);

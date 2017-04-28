@@ -19,15 +19,15 @@ import java.util.Date;
  *Represents an Photo object with image, date, caption, and tags
  */
 public class Photo implements Serializable{
-    private Bitmap bitmap;
+    private byte[] bitmap;
     private String title;
     private ArrayList<Tag> tags;
 
     /**
      * Initializes a photo object with given image
-     * @param uri file
+     * @param bitmap
      */
-    public Photo(Bitmap bitmap){
+    public Photo(byte[] bitmap){
         this.bitmap = bitmap;
         tags = new ArrayList<>();
     }
@@ -36,7 +36,7 @@ public class Photo implements Serializable{
      * Returns the image file
      * @return Image file
      */
-    public Bitmap getImage(){
+    public byte[] getImage(){
 
         return this.bitmap;
     }

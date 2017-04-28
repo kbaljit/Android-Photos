@@ -32,8 +32,8 @@ public class displayPhoto extends AppCompatActivity {
             setContentView(R.layout.photo);
 
             //Simply a test Photo, will not actually work. Previous Activity should create photos from Bitmap
-            Bitmap bmap=BitmapFactory.decodeFile(testDecode);
-            Photo test=new Photo(bmap);
+            byte[] testPhoto=null;
+            Photo test=new Photo(testPhoto);
 
             //After Selecting a Photo, populate a two column Table Layout with tag names and values
             ArrayList<Tag> tags=test.getTags();
