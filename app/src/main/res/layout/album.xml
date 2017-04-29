@@ -45,7 +45,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="true"
-            android:longClickable="true" />
+            android:longClickable="true"
+            android:numColumns="3"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="10dp"
+            android:scrollbarStyle="outsideOverlay"
+            android:verticalScrollbarPosition="right"
+            android:scrollbars="vertical" />
 
     </LinearLayout>
 

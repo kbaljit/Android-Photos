@@ -46,7 +46,7 @@ public class AlbumActivity extends AppCompatActivity{
     ArrayList<Photo> photos;
     PhotoLibrary photolib=null;
     private String selectedImagePath;
-    int pos;
+    int p;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class AlbumActivity extends AppCompatActivity{
         for (int i = 0; i < photolib.getAlbums().size(); i++) {
             if (photolib.getAlbums().get(i).getTitle().equals(Album_Name)) {
                 photos = photolib.getAlbums().get(i).getPhotos();
-                pos = i;
+                p = i;
             }
         }
 
@@ -70,15 +70,29 @@ public class AlbumActivity extends AppCompatActivity{
         final ImageButton deleteButton = (ImageButton) findViewById(R.id.deletephoto);
 
         photoList = (GridView) findViewById(R.id.gridview);
-        photoList.setAdapter(new ImageAdapter(this));
+        final ImageAdapter ia = new ImageAdapter(this);
+        photoList.setAdapter(ia);
 
         //enable delete button when item is long clicked
         photoList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int pos, long id) {
-
+                final int position = pos;
                 deleteButton.setVisibility(View.VISIBLE);
+                deleteButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view){
+                        photolib.getAlbums().get(p).getPhotos().remove(position);
+                        ia.notifyDataSetChanged();
+                        try {
+                            writeApp(photolib, context);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        deleteButton.setVisibility(View.INVISIBLE);
+                    }
+                });
                 return true;
             }
         });
@@ -101,13 +115,7 @@ public class AlbumActivity extends AppCompatActivity{
                         0);
                 startActivityForResult(Intent.createChooser(intent,
                         "Select Picture"), 1);
-
-            }
-        });
-
-        deleteButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
+                ia.notifyDataSetChanged();
 
             }
         });
@@ -120,11 +128,8 @@ public class AlbumActivity extends AppCompatActivity{
             if (requestCode == 1 && data != null && data.getData() != null) {
                 Uri selectedImageUri = data.getData();
                 String stringUri=selectedImageUri.toString();
-                selectedImagePath = getPath(selectedImageUri);
-                Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath);
                 Photo photo = new Photo(stringUri);
-                photos.add(photo);
-                photolib.getAlbums().get(pos).getPhotos().add(photo);
+                photolib.getAlbums().get(p).getPhotos().add(photo);
                 try {
                     writeApp(photolib, context);
                 } catch (IOException e) {
@@ -136,7 +141,6 @@ public class AlbumActivity extends AppCompatActivity{
 
     public String getPath(Uri uri) {
         if( uri == null ) {
-            // TODO perform some logging or show user feedback
             return null;
         }
 
