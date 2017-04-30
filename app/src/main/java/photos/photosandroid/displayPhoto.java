@@ -72,7 +72,6 @@ public class displayPhoto extends AppCompatActivity{
             setImageView(photo);
 
             Button addTag=(Button) findViewById(R.id.addtag);
-            Button deleteTag=(Button) findViewById(R.id.deletetag);
 
         addTag.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,9 +164,11 @@ public class displayPhoto extends AppCompatActivity{
             String Name=tags.get(i).getTagName();
             String Value=tags.get(i).getTagValue();
             TextView nameView=new TextView(this);
-            nameView.setText(Name+"  ");
+            nameView.setText(Name);
+            TextView spacing=new TextView(this);
+            spacing.setText("   ");
             TextView valueView=new TextView(this);
-            valueView.setText("  "+Value);
+            valueView.setText(Value);
             Button tagDelete=new Button(this);
             tagDelete.setText("Delete");
             tagDelete.setOnClickListener(new View.OnClickListener() {
@@ -182,14 +183,13 @@ public class displayPhoto extends AppCompatActivity{
 
                     TableRow tempRow=(TableRow) row;
                     TextView nameView=(TextView) tempRow.getChildAt(0);
-                    TextView valueView=(TextView) tempRow.getChildAt(1);
+                    TextView valueView=(TextView) tempRow.getChildAt(2);
                     String tagName=nameView.getText().toString();
                     String tagValue=valueView.getText().toString();
 
-                    Log.d("Debug", tagName + " "+ tagValue);
-
                     for(int i=0; i<temp.getTags().size();i++){
-                        if((tagName.trim().equals(temp.getTags().get(i).getTagName())) && (tagValue.trim().equals(temp.getTags().get(i).getTagValue()))){
+                        if((tagName.equals(temp.getTags().get(i).getTagName())) && (tagValue.equals(temp.getTags().get(i).getTagValue()))){
+                            Log.d("Debug", temp.getTags().get(i).getTagName() + " "+ temp.getTags().get(i).getTagValue());
                             temp.getTags().remove(i);
                             setPhotoInAlbum(temp);
                             try {
@@ -206,6 +206,7 @@ public class displayPhoto extends AppCompatActivity{
                 }
             });
             row.addView(nameView);
+            row.addView(spacing);
             row.addView(valueView);
             row.addView(tagDelete);
             TTable.addView(row);
