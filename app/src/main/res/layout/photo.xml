@@ -26,22 +26,16 @@
                 android:id="@+id/move"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.41"
+                android:layout_weight="0.56"
                 android:text="Move Photo" />
 
             <Button
                 android:id="@+id/addtag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.19"
+                android:layout_weight="0.47"
                 android:text="Add Tag" />
 
-            <Button
-                android:id="@+id/deletetag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Delete Tag"
-                android:layout_weight="0.35" />
         </LinearLayout>
 
         <ImageView

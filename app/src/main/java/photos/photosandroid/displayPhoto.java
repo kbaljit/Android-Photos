@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,7 +38,7 @@ import static photos.photosandroid.AlbumActivity.getDataColumn;
 import static photos.photosandroid.AlbumActivity.isGooglePhotosUri;
 import static photos.photosandroid.AlbumActivity.isMediaDocument;
 
-public class displayPhoto extends AppCompatActivity {
+public class displayPhoto extends AppCompatActivity{
     TableLayout TTable;
     ImageView ImgView;
     PhotoLibrary photoLib= new PhotoLibrary();
@@ -119,9 +120,7 @@ public class displayPhoto extends AppCompatActivity {
                                     setTagView(photo);
 
                                 }
-                                else{
-
-                                }
+                                else{}
                             }
                         });
 
@@ -137,13 +136,6 @@ public class displayPhoto extends AppCompatActivity {
             }
         });
 
-        deleteTag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view){
-
-
-            }
-        });
     }
 
     public Photo findPhotoInAlbum(String AlbumName, int pos){
@@ -164,7 +156,7 @@ public class displayPhoto extends AppCompatActivity {
 
     }
 
-    public void setTagView(Photo P){
+    public void setTagView(final Photo P){
         ArrayList<Tag> tags=P.getTags();
         TTable=(TableLayout) findViewById(R.id.TagTable);
         TTable.removeAllViews();
@@ -176,8 +168,46 @@ public class displayPhoto extends AppCompatActivity {
             nameView.setText(Name+"  ");
             TextView valueView=new TextView(this);
             valueView.setText("  "+Value);
+            Button tagDelete=new Button(this);
+            tagDelete.setText("Delete");
+            tagDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int id=pos;
+                    Photo temp=P;
+                    View row=(View) v.getParent();
+                    ViewGroup Container=((ViewGroup) row.getParent());
+                    Container.removeView(row);
+                    Container.invalidate();
+
+                    TableRow tempRow=(TableRow) row;
+                    TextView nameView=(TextView) tempRow.getChildAt(0);
+                    TextView valueView=(TextView) tempRow.getChildAt(1);
+                    String tagName=nameView.getText().toString();
+                    String tagValue=valueView.getText().toString();
+
+                    Log.d("Debug", tagName + " "+ tagValue);
+
+                    for(int i=0; i<temp.getTags().size();i++){
+                        if((tagName.trim().equals(temp.getTags().get(i).getTagName())) && (tagValue.trim().equals(temp.getTags().get(i).getTagValue()))){
+                            temp.getTags().remove(i);
+                            setPhotoInAlbum(temp);
+                            try {
+                                writeApp(photoLib, context);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+
+
+
+                }
+            });
             row.addView(nameView);
             row.addView(valueView);
+            row.addView(tagDelete);
             TTable.addView(row);
         }
 
