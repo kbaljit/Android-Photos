@@ -47,6 +47,7 @@ public class AlbumActivity extends AppCompatActivity{
     PhotoLibrary photolib=null;
     private String selectedImagePath;
     int p;
+    Bundle b;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,10 +55,9 @@ public class AlbumActivity extends AppCompatActivity{
         setContentView(R.layout.album);
 
         Intent intent = getIntent();
-        Bundle b = intent.getExtras();
+        b = intent.getExtras();
         String Album_Name = b.getString("ALBUM_NAME");
         photolib = (PhotoLibrary) b.getSerializable("PHOTO_LIB");
-        Log.d("Debug", photolib.getAlbums().get(0).getTitle());
 
         for (int i = 0; i < photolib.getAlbums().size(); i++) {
             if (photolib.getAlbums().get(i).getTitle().equals(Album_Name)) {
@@ -101,6 +101,14 @@ public class AlbumActivity extends AppCompatActivity{
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 //open display code here
+                Bundle bundle=new Bundle();
+                bundle.putInt("GRID_POS", position);
+                bundle.putSerializable("LIBRARY", photolib);
+                bundle.putString("ALBUM_NAME", b.getString("ALBUM_NAME"));
+                Intent intent=new Intent(context, displayPhoto.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+
             }
         });
 

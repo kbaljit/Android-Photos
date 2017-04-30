@@ -27,7 +27,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.41"
-                android:onClick="loadImagefromGallery"
                 android:text="Move Photo" />
 
             <Button
@@ -49,8 +48,13 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="326dp"
-            app:srcCompat="@android:drawable/ic_menu_report_image" />
+            android:visibility="visible"
+            app:srcCompat="@android:drawable/arrow_down_float" />
 
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:scrollbars="none">
         <TableLayout
             android:id="@+id/TagTable"
             android:layout_width="match_parent"
@@ -72,6 +76,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </TableLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/Previous"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Previous" />
+
+            <Button
+                android:id="@+id/Next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Next" />
+        </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>
