@@ -223,16 +223,6 @@ public class AlbumActivity extends AppCompatActivity{
         oos.writeObject(photoLib);
         oos.close();
     }
-    public static PhotoLibrary readApp(File F) throws IOException, ClassNotFoundException {
-        if(F.length() == 0){
-            return new PhotoLibrary();
-        }
-        ObjectInputStream ois = new ObjectInputStream(
-                new FileInputStream(F));
-        PhotoLibrary photoLib = (PhotoLibrary)ois.readObject();
-        ois.close();
-        return photoLib;
-    }
 
     private class ImageAdapter extends BaseAdapter {
         private Context context;
@@ -263,8 +253,8 @@ public class AlbumActivity extends AppCompatActivity{
                 String filePath=getPath(uri);
                 Bitmap bitmap =BitmapFactory.decodeFile(filePath);
                 imageView.setImageBitmap(bitmap);
-                imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setLayoutParams(new GridView.LayoutParams(200, 200));
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 imageView.setPadding(8, 8, 8, 8);
             } else {
                 imageView = (ImageView) convertView;
