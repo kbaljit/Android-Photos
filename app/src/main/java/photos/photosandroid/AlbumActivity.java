@@ -143,6 +143,8 @@ public class AlbumActivity extends AppCompatActivity{
                 String stringUri=selectedImageUri.toString();
                 Photo photo = new Photo(stringUri);
                 photos.add(photo);
+                photoList.setAdapter(ia);
+                photoList.invalidateViews();
                 ia.notifyDataSetChanged();
                 try {
                     writeApp(photolib, context);
@@ -151,6 +153,8 @@ public class AlbumActivity extends AppCompatActivity{
                 }
             }
         }
+        photoList.setAdapter(ia);
+        photoList.invalidateViews();
         ia.notifyDataSetChanged();
     }
 
