@@ -47,6 +47,7 @@ public class displayPhoto extends AppCompatActivity{
     Photo photo;
     int pos;
     String AlbumName;
+    int photoCount;
 
 
     @Override
@@ -67,11 +68,65 @@ public class displayPhoto extends AppCompatActivity{
             pos=b.getInt("GRID_POS");
             AlbumName=b.getString("ALBUM_NAME");
             photo=findPhotoInAlbum(AlbumName, pos);
-
+            photoCount=b.getInt("PHOTO_NUM");
             setTagView(photo);
             setImageView(photo);
 
             Button addTag=(Button) findViewById(R.id.addtag);
+            Button nextPhoto=(Button) findViewById(R.id.Next);
+            Button previousPhoto=(Button) findViewById(R.id.Previous);
+
+        nextPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Album temp=null;
+                for(int i=0; i<photoLib.getAlbums().size(); i++){
+                    if(photoLib.getAlbums().get(i).getTitle().equals(AlbumName)){
+                        temp=photoLib.getAlbums().get(i);
+                    }
+                }
+                if(pos==temp.getNumPhotos()-1){
+                    pos=0;
+                    Photo next=temp.getPhotos().get(pos);
+                    setImageView(next);
+                    setTagView(next);
+                }
+                else{
+                    pos++;
+                    Photo next=temp.getPhotos().get(pos);
+                    setImageView(next);
+                    setTagView(next);
+                }
+
+
+            }
+        });
+
+        previousPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Album temp=null;
+                for(int i=0; i<photoLib.getAlbums().size(); i++){
+                    if(photoLib.getAlbums().get(i).getTitle().equals(AlbumName)){
+                        temp=photoLib.getAlbums().get(i);
+                    }
+                }
+                if(pos==0){
+                    pos=temp.getNumPhotos()-1;
+                    Photo next=temp.getPhotos().get(pos);
+                    setImageView(next);
+                    setTagView(next);
+                }
+                else{
+                    pos--;
+                    Photo next=temp.getPhotos().get(pos);
+                    setImageView(next);
+                    setTagView(next);
+                }
+
+
+            }
+        });
 
         addTag.setOnClickListener(new View.OnClickListener() {
             @Override

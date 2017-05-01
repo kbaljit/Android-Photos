@@ -103,6 +103,7 @@ public class AlbumActivity extends AppCompatActivity{
                 //open display code here
                 Bundle bundle=new Bundle();
                 bundle.putInt("GRID_POS", position);
+                bundle.putInt("PHOTO_NUM", ia.getCount());
                 bundle.putSerializable("LIBRARY", photolib);
                 bundle.putString("ALBUM_NAME", b.getString("ALBUM_NAME"));
                 Intent intent=new Intent(context, displayPhoto.class);

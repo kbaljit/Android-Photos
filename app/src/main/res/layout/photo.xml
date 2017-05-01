@@ -46,30 +46,31 @@
             app:srcCompat="@android:drawable/arrow_down_float" />
 
         <ScrollView
-            android:layout_width="fill_parent"
-            android:layout_height="100dp"
-            android:scrollbars="none">
-        <TableLayout
-            android:id="@+id/TagTable"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="88dp"
+            android:scrollbars="none">
 
-            <TableRow
+            <TableLayout
+                android:id="@+id/TagTable"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </TableLayout>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </TableLayout>
         </ScrollView>
 
         <LinearLayout
