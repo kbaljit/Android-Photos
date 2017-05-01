@@ -1,5 +1,6 @@
 package photos.photosandroid;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,20 +10,25 @@ import android.media.Image;
 import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,6 +54,8 @@ public class displayPhoto extends AppCompatActivity{
     int pos;
     String AlbumName;
     int photoCount;
+    Album temp=new Album("temp");
+
 
 
     @Override
@@ -65,38 +73,128 @@ public class displayPhoto extends AppCompatActivity{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
             pos=b.getInt("GRID_POS");
             AlbumName=b.getString("ALBUM_NAME");
-            photo=findPhotoInAlbum(AlbumName, pos);
+            photo =findPhotoInAlbum(AlbumName, pos);
             photoCount=b.getInt("PHOTO_NUM");
             setTagView(photo);
             setImageView(photo);
+        for(int i=0; i<photoLib.getAlbums().size(); i++){
+            if(photoLib.getAlbums().get(i).getTitle().equals(AlbumName)){
+                temp=photoLib.getAlbums().get(i);
+            }
+        }
 
             Button addTag=(Button) findViewById(R.id.addtag);
             Button nextPhoto=(Button) findViewById(R.id.Next);
             Button previousPhoto=(Button) findViewById(R.id.Previous);
+            Button movePhoto=(Button) findViewById(R.id.move);
+
+        movePhoto.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                final AlertDialog builder=new AlertDialog.Builder(context).create();
+                ScrollView Scroller=new ScrollView(context);
+                builder.setTitle("Select Album to Move Photo to");
+                final LinearLayout LL= new LinearLayout(context);
+                LL.setOrientation(LinearLayout.VERTICAL);
+                Scroller.addView(LL);
+                Button cancel=new Button(context);
+                cancel.setText("Cancel");
+                cancel.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        builder.dismiss();
+                    }
+                });
+                for(int i=0; i<photoLib.getAlbums().size();i++) {
+                    TextView text = new TextView(context);
+                    text.setText(photoLib.getAlbums().get(i).getTitle());
+                    text.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            TextView text=(TextView) v;
+                            String moveAlbum=text.getText().toString();
+
+                            for(int i=0; i<photoLib.getAlbums().size();i++){
+                                if(moveAlbum.equals(photoLib.getAlbums().get(i).getTitle())){
+                                    Photo P=photo;
+                                    photoLib.getAlbums().get(i).addPhoto(P);
+                                    int origPos=pos;
+
+                                    if(getNumPhotos()==1){
+                                        deletePhotoInAlbum(origPos);
+                                        try {
+                                            writeApp(photoLib, context);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        Log.d("debug", "entered");
+                                        Bundle send=new Bundle();
+                                        Intent intent=new Intent(context, AlbumActivity.class);
+                                        send.putString("ALBUM_NAME", AlbumName);
+                                        send.putSerializable("PHOTO_LIB", photoLib );
+                                        intent.putExtras(send);
+                                        startActivity(intent);
+                                        builder.dismiss();
+                                        return;
+                                    }
+
+                                    deletePhotoInAlbum(origPos);
+                                    try {
+                                        writeApp(photoLib, context);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    builder.dismiss();
+                                    Intent newIntent=getIntent();
+                                    Bundle oldBundle=newIntent.getExtras();
+                                    if(pos==0)
+                                    oldBundle.putInt("GRID_POS", pos);
+                                    else
+                                    oldBundle.putInt("GRID_POS", pos-1);
+                                    newIntent.putExtras(oldBundle);
+                                    startActivity(newIntent);
+
+
+                                }
+                            }
+
+                        }
+                    });
+                    if (photoLib.getAlbums().get(i).getTitle().equals(AlbumName)) {
+
+                    } else {
+                        LL.addView(text);
+                    }
+                }
+                LL.addView(cancel);
+                builder.setView(Scroller);
+                builder.show();
+            }
+        });
+
+
 
         nextPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Album temp=null;
-                for(int i=0; i<photoLib.getAlbums().size(); i++){
-                    if(photoLib.getAlbums().get(i).getTitle().equals(AlbumName)){
-                        temp=photoLib.getAlbums().get(i);
-                    }
-                }
                 if(pos==temp.getNumPhotos()-1){
                     pos=0;
                     Photo next=temp.getPhotos().get(pos);
                     setImageView(next);
                     setTagView(next);
+                    photo=next;
                 }
                 else{
                     pos++;
                     Photo next=temp.getPhotos().get(pos);
                     setImageView(next);
                     setTagView(next);
+                    photo=next;
                 }
+                AlbumName=temp.getTitle();
 
 
             }
@@ -105,24 +203,21 @@ public class displayPhoto extends AppCompatActivity{
         previousPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Album temp=null;
-                for(int i=0; i<photoLib.getAlbums().size(); i++){
-                    if(photoLib.getAlbums().get(i).getTitle().equals(AlbumName)){
-                        temp=photoLib.getAlbums().get(i);
-                    }
-                }
                 if(pos==0){
                     pos=temp.getNumPhotos()-1;
                     Photo next=temp.getPhotos().get(pos);
                     setImageView(next);
                     setTagView(next);
+                    photo=next;
                 }
                 else{
                     pos--;
                     Photo next=temp.getPhotos().get(pos);
                     setImageView(next);
                     setTagView(next);
+                    photo=next;
                 }
+                AlbumName=temp.getTitle();
 
 
             }
@@ -200,6 +295,22 @@ public class displayPhoto extends AppCompatActivity{
         }
         return null;
     }
+    public void deletePhotoInAlbum(int pos) {
+        for (int i = 0; i < photoLib.getAlbums().size(); i++) {
+            if (photoLib.getAlbums().get(i).getTitle().equals(AlbumName)) {
+                photoLib.getAlbums().get(i).getPhotos().remove(pos);
+            }
+        }
+    }
+
+    public int getNumPhotos(){
+        for (int i = 0; i < photoLib.getAlbums().size(); i++) {
+            if (photoLib.getAlbums().get(i).getTitle().equals(AlbumName)) {
+               return photoLib.getAlbums().get(i).getPhotos().size();
+            }
+        }
+        return 0;
+    }
 
     public void setPhotoInAlbum(Photo P){
         for(int i=0; i<photoLib.getAlbums().size(); i++){
@@ -267,6 +378,23 @@ public class displayPhoto extends AppCompatActivity{
             TTable.addView(row);
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case android.R.id.home: {
+                Log.d("Debugger", "Back Button Refresh");
+                Bundle send=new Bundle();
+                Intent intent=new Intent(context, AlbumActivity.class);
+                send.putString("ALBUM_NAME", AlbumName);
+                send.putSerializable("PHOTO_LIB", photoLib );
+                intent.putExtras(send);
+                startActivity(intent);
+                finish();
+            }
+        }
+        return (super.onOptionsItemSelected(menuItem));
     }
     public void setImageView(Photo P){
         Uri uri=Uri.parse(P.getImage());

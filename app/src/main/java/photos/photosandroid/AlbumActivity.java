@@ -111,6 +111,8 @@ public class AlbumActivity extends AppCompatActivity{
                 Intent intent=new Intent(context, displayPhoto.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                photoList.invalidateViews();
+                ia.notifyDataSetChanged();
             }
         });
 
