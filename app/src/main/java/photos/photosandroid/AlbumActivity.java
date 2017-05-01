@@ -47,6 +47,7 @@ public class AlbumActivity extends AppCompatActivity{
     PhotoLibrary photolib=null;
     private String selectedImagePath;
     int p;
+    ImageAdapter ia;
     Bundle b;
 
     @Override
@@ -70,7 +71,7 @@ public class AlbumActivity extends AppCompatActivity{
         final ImageButton deleteButton = (ImageButton) findViewById(R.id.deletephoto);
 
         photoList = (GridView) findViewById(R.id.gridview);
-        final ImageAdapter ia = new ImageAdapter(this);
+        ia = new ImageAdapter(this);
         photoList.setAdapter(ia);
 
         //enable delete button when item is long clicked
@@ -84,13 +85,15 @@ public class AlbumActivity extends AppCompatActivity{
                     @Override
                     public void onClick(View view){
                         photolib.getAlbums().get(p).getPhotos().remove(position);
-                        ia.notifyDataSetChanged();
+                        photos = photolib.getAlbums().get(p).getPhotos();
+                        photoList.setAdapter(ia);
                         try {
                             writeApp(photolib, context);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         deleteButton.setVisibility(View.INVISIBLE);
+                        ia.notifyDataSetChanged();
                     }
                 });
                 return true;
@@ -103,13 +106,11 @@ public class AlbumActivity extends AppCompatActivity{
                 //open display code here
                 Bundle bundle=new Bundle();
                 bundle.putInt("GRID_POS", position);
-                bundle.putInt("PHOTO_NUM", ia.getCount());
                 bundle.putSerializable("LIBRARY", photolib);
                 bundle.putString("ALBUM_NAME", b.getString("ALBUM_NAME"));
                 Intent intent=new Intent(context, displayPhoto.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
-
             }
         });
 
@@ -124,8 +125,10 @@ public class AlbumActivity extends AppCompatActivity{
                         0);
                 startActivityForResult(Intent.createChooser(intent,
                         "Select Picture"), 1);
-                ia.notifyDataSetChanged();
 
+                photoList.setAdapter(ia);
+                photoList.invalidateViews();
+                ia.notifyDataSetChanged();
             }
         });
 
@@ -138,7 +141,7 @@ public class AlbumActivity extends AppCompatActivity{
                 Uri selectedImageUri = data.getData();
                 String stringUri=selectedImageUri.toString();
                 Photo photo = new Photo(stringUri);
-                photolib.getAlbums().get(p).getPhotos().add(photo);
+                photos.add(photo);
                 try {
                     writeApp(photolib, context);
                 } catch (IOException e) {

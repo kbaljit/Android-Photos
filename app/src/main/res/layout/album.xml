@@ -51,7 +51,10 @@
             android:horizontalSpacing="10dp"
             android:scrollbarStyle="outsideOverlay"
             android:verticalScrollbarPosition="right"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:scrollingCache="false"
+            android:cacheColorHint="@android:color/transparent"
+            />
 
     </LinearLayout>
 
