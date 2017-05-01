@@ -126,6 +126,7 @@ public class AlbumActivity extends AppCompatActivity{
                 startActivityForResult(Intent.createChooser(intent,
                         "Select Picture"), 1);
 
+                //photos = photolib.getAlbums().get(p).getPhotos();
                 photoList.setAdapter(ia);
                 photoList.invalidateViews();
                 ia.notifyDataSetChanged();
@@ -142,6 +143,7 @@ public class AlbumActivity extends AppCompatActivity{
                 String stringUri=selectedImageUri.toString();
                 Photo photo = new Photo(stringUri);
                 photos.add(photo);
+                ia.notifyDataSetChanged();
                 try {
                     writeApp(photolib, context);
                 } catch (IOException e) {
@@ -149,6 +151,7 @@ public class AlbumActivity extends AppCompatActivity{
                 }
             }
         }
+        ia.notifyDataSetChanged();
     }
 
     public String getPath(Uri uri) {
