@@ -242,7 +242,21 @@ public class displayPhoto extends AppCompatActivity{
                             public void onClick(DialogInterface dialog, int which) {
                                 String tagName=input.getText().toString();
                                 String tagValue=input1.getText().toString();
+                                Log.d("debugging", tagName+" "+tagValue);
                                 boolean duplicate=false;
+                                if(!(tagName.equals("person") || tagName.equals("location"))){
+                                    AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                                    alertDialog.setTitle("Alert");
+                                    alertDialog.setMessage("Invalid Tag, Try Again");
+                                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                    duplicate=true;
+                                    alertDialog.show();
+                                }
                                 for(int i=0; i<photo.getTags().size();i++){
                                     if((tagName.equals(photo.getTags().get(i).getTagName())) && (tagValue.equals(photo.getTags().get(i).getTagValue()))){
                                         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
