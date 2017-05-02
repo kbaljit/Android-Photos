@@ -135,6 +135,8 @@ public class AlbumActivity extends AppCompatActivity{
             }
         });
 
+        Toast.makeText(AlbumActivity.this, "Long click a photo to enable the delete button.",
+                Toast.LENGTH_LONG).show();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

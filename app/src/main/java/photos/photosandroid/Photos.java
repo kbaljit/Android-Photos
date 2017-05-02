@@ -3,17 +3,29 @@ package photos.photosandroid;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,6 +45,7 @@ public class Photos extends AppCompatActivity implements Serializable {
     private String title="";
     private String rename="";
     private Album temp;
+    ArrayList<Photo> matches;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +75,7 @@ public class Photos extends AppCompatActivity implements Serializable {
         ImageButton addButton=(ImageButton) findViewById(R.id.addButton);
         ImageButton deleteButton=(ImageButton) findViewById(R.id.deleteButton);
         ImageButton renameButton=(ImageButton) findViewById(R.id.renameButton);
+        ImageButton searchButton=(ImageButton) findViewById(R.id.searchButton);
 
         addButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -139,6 +153,113 @@ public class Photos extends AppCompatActivity implements Serializable {
                     }
 
                 });
+            }
+
+        });
+
+        searchButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                LinearLayout lila1= new LinearLayout(context);
+                lila1.setOrientation(LinearLayout.VERTICAL);
+                builder.setTitle("Enter Tag Name and Value");
+                final EditText type=new EditText(context);
+                type.setHint("Name");
+                final EditText value=new EditText(context);
+                value.setHint("Value");
+                lila1.addView(type);
+                lila1.addView(value);
+                builder.setView(lila1);
+
+                builder.setPositiveButton("SEARCH", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which){
+                        String typeS = type.getText().toString();
+                        String valueS = value.getText().toString();
+
+                        if(!((typeS.equalsIgnoreCase("location")) || (typeS.equalsIgnoreCase("person")))){
+                            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                            alertDialog.setTitle("Alert");
+                            alertDialog.setMessage("Incorrect Tag Name. Please enter a location or person tag.");
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
+                        }else if((typeS.equals("")) || (valueS.equals(""))){
+                            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                            alertDialog.setTitle("Alert");
+                            alertDialog.setMessage("Tag name and/or value is empty. Try Again.");
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
+                        }else{
+                            matches = new ArrayList<>();
+
+                            for(int i = 0; i < photolib.getAlbums().size(); i++){
+                                for(int j = 0; j < photolib.getAlbums().get(i).getPhotos().size(); j++){
+                                    for(int k = 0; k < photolib.getAlbums().get(i).getPhotos().get(j).getTags().size(); k++){
+                                        String t = photolib.getAlbums().get(i).getPhotos().get(j).getTags().get(k).getTagName();
+                                        String v = photolib.getAlbums().get(i).getPhotos().get(j).getTags().get(k).getTagValue();
+                                        if(t.equalsIgnoreCase(typeS) && v.equalsIgnoreCase(valueS)){
+                                            matches.add(photolib.getAlbums().get(i).getPhotos().get(j));
+                                        }else if(t.equalsIgnoreCase(typeS) && v.toLowerCase().contains(valueS.toLowerCase())){
+                                            int begin = v.indexOf(valueS, 0);
+                                            int end = v.lastIndexOf(valueS, 0);
+                                            if((begin != 0) && (end != v.length() - 1)){
+                                                if((v.charAt(begin - 1) == ' ') && (v.charAt(end + 1) == ' ')){
+                                                    matches.add(photolib.getAlbums().get(i).getPhotos().get(j));
+                                                }
+                                            }else if((begin == 0) || (end == v.length() - 1)){
+                                                 if(begin == 0 && v.charAt(end + 1) == ' '){
+                                                     matches.add(photolib.getAlbums().get(i).getPhotos().get(j));
+                                                 }else if((end == v.length() - 1) && (v.charAt(begin - 1) == ' ')){
+                                                     matches.add(photolib.getAlbums().get(i).getPhotos().get(j));
+                                                 }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if(matches.size() == 0){
+                                Toast.makeText(Photos.this, "No matches found.",
+                                        Toast.LENGTH_LONG).show();
+                            }else{
+                                GridView gridView = new GridView(context);
+                                gridView.setAdapter(new ImageAdapter(context));
+                                gridView.setNumColumns(3);
+                                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                    }
+                                });
+
+                                AlertDialog.Builder b = new AlertDialog.Builder(context);
+                                b.setView(gridView);
+                                b.setTitle("Matches Found");
+                                b.show();
+                            }
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which){
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
             }
 
         });
@@ -228,5 +349,102 @@ public class Photos extends AppCompatActivity implements Serializable {
         return photoLib;
     }
 
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
 
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
+
+    public static String getDataColumn(Context cont, Uri uri, String selection,
+                                       String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = cont.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+    public String getPath(Uri uri) {
+        if( uri == null ) {
+            return null;
+        }
+
+        if (isMediaDocument(uri)){
+            final String docId = DocumentsContract.getDocumentId(uri);
+            final String[] split = docId.split(":");
+            final String type = split[0];
+
+            Uri contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
+            final String selection = "_id=?";
+            final String[] selectionArgs = new String[] {
+                    split[1]
+            };
+
+            return getDataColumn(context, contentUri, selection, selectionArgs);
+        }else if("content".equalsIgnoreCase(uri.getScheme())){
+            if (isGooglePhotosUri(uri))
+                return uri.getLastPathSegment();
+
+            return getDataColumn(context, uri, null, null);
+        }
+
+        return null;
+    }
+
+    private class ImageAdapter extends BaseAdapter {
+        private Context context;
+
+        public ImageAdapter(Context c) {
+            this.context = c;
+        }
+
+        public int getCount() {
+            return matches.size();
+        }
+
+        public Object getItem(int position) {
+            return position;
+        }
+
+        public long getItemId(int position) {
+            return position;
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ImageView imageView;
+            if (convertView == null) {
+                imageView = new ImageView(context);
+                Uri uri;
+                String uriString=matches.get(position).getImage();
+                uri=Uri.parse(uriString);
+                String filePath=getPath(uri);
+                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                imageView.setImageBitmap(bitmap);
+                imageView.setLayoutParams(new GridView.LayoutParams(200, 200));
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setPadding(8, 8, 8, 8);
+            } else {
+                imageView = (ImageView) convertView;
+            }
+
+            return imageView;
+        }
+    }
 }
