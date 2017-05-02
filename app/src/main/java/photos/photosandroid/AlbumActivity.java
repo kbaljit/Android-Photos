@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -49,6 +50,7 @@ public class AlbumActivity extends AppCompatActivity{
     int p;
     ImageAdapter ia;
     Bundle b;
+    Uri selectedImageUri;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -144,9 +146,10 @@ public class AlbumActivity extends AppCompatActivity{
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == 1 && data != null && data.getData() != null) {
-                Uri selectedImageUri = data.getData();
+                selectedImageUri = data.getData();
                 String stringUri=selectedImageUri.toString();
                 Photo photo = new Photo(stringUri);
+                photo.setTitle(getPath(selectedImageUri));
                 photos.add(photo);
                 photoList.setAdapter(ia);
                 photoList.invalidateViews();
@@ -221,6 +224,7 @@ public class AlbumActivity extends AppCompatActivity{
         }
         return null;
     }
+
 
     public static void writeApp(PhotoLibrary photoLib, Context context) throws IOException {
         File outFile = new File(context.getFilesDir(), "library.bin");

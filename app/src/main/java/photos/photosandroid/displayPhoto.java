@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
@@ -77,6 +78,16 @@ public class displayPhoto extends AppCompatActivity{
             pos=b.getInt("GRID_POS");
             AlbumName=b.getString("ALBUM_NAME");
             photo =findPhotoInAlbum(AlbumName, pos);
+            String s=photo.getTitle();
+            String FileName="";
+            if(Uri.parse(photo.getImage())==null){
+                FileName="No Title";
+            }
+            else{
+                FileName = s.substring(s.lastIndexOf("/") + 1);
+            }
+
+            getSupportActionBar().setTitle(FileName);
             photoCount=b.getInt("PHOTO_NUM");
             setTagView(photo);
             setImageView(photo);
@@ -301,6 +312,7 @@ public class displayPhoto extends AppCompatActivity{
 
     }
 
+
     public Photo findPhotoInAlbum(String AlbumName, int pos){
         for(int i=0; i<photoLib.getAlbums().size(); i++){
             if(photoLib.getAlbums().get(i).getTitle().equals(AlbumName)){
@@ -417,6 +429,7 @@ public class displayPhoto extends AppCompatActivity{
         ImgView.setImageBitmap(bitmap);
 
     }
+
 
     public String getPath(Uri uri) {
         if( uri == null ) {
