@@ -7,13 +7,11 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -40,6 +38,7 @@ import java.util.ArrayList;
 public class Photos extends AppCompatActivity implements Serializable {
     ListView albumList;
     PhotoLibrary photolib = new PhotoLibrary();
+    PhotoLibrary searches = new PhotoLibrary();
     ArrayAdapter<String> adapter;
     final Context context=this;
     private String title="";
@@ -202,7 +201,6 @@ public class Photos extends AppCompatActivity implements Serializable {
                             alertDialog.show();
                         }else{
                             matches = new ArrayList<>();
-
                             for(int i = 0; i < photolib.getAlbums().size(); i++){
                                 for(int j = 0; j < photolib.getAlbums().get(i).getPhotos().size(); j++){
                                     for(int k = 0; k < photolib.getAlbums().get(i).getPhotos().get(j).getTags().size(); k++){
@@ -211,19 +209,7 @@ public class Photos extends AppCompatActivity implements Serializable {
                                         if(t.equalsIgnoreCase(typeS) && v.equalsIgnoreCase(valueS)){
                                             matches.add(photolib.getAlbums().get(i).getPhotos().get(j));
                                         }else if(t.equalsIgnoreCase(typeS) && v.toLowerCase().contains(valueS.toLowerCase())){
-                                            int begin = v.indexOf(valueS, 0);
-                                            int end = v.lastIndexOf(valueS, 0);
-                                            if((begin != 0) && (end != v.length() - 1)){
-                                                if((v.charAt(begin - 1) == ' ') && (v.charAt(end + 1) == ' ')){
-                                                    matches.add(photolib.getAlbums().get(i).getPhotos().get(j));
-                                                }
-                                            }else if((begin == 0) || (end == v.length() - 1)){
-                                                 if(begin == 0 && v.charAt(end + 1) == ' '){
-                                                     matches.add(photolib.getAlbums().get(i).getPhotos().get(j));
-                                                 }else if((end == v.length() - 1) && (v.charAt(begin - 1) == ' ')){
-                                                     matches.add(photolib.getAlbums().get(i).getPhotos().get(j));
-                                                 }
-                                            }
+                                            matches.add(photolib.getAlbums().get(i).getPhotos().get(j));
                                         }
                                     }
                                 }
@@ -233,19 +219,38 @@ public class Photos extends AppCompatActivity implements Serializable {
                                 Toast.makeText(Photos.this, "No matches found.",
                                         Toast.LENGTH_LONG).show();
                             }else{
-                                GridView gridView = new GridView(context);
-                                gridView.setAdapter(new ImageAdapter(context));
+                                Album mFound = new Album("Matches_lastSearch");
+                                for(int a = 0; a < matches.size(); a++){
+                                    mFound.addPhoto(matches.get(a));
+                                }
+                                final GridView gridView = new GridView(context);
+                                final ImageAdapter ia = new ImageAdapter(context);
+                                gridView.setAdapter(ia);
                                 gridView.setNumColumns(3);
                                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                                        Bundle bundle=new Bundle();
+                                        bundle.putInt("GRID_POS", position);
+                                        bundle.putSerializable("LIBRARY", photolib);
+                                        bundle.putString("ALBUM_NAME", "Matches_lastSearch");
+                                        Intent intent=new Intent(context, DisplaySearches.class);
+                                        intent.putExtras(bundle);
+                                        startActivity(intent);
+                                        gridView.invalidateViews();
+                                        ia.notifyDataSetChanged();
                                     }
                                 });
 
                                 AlertDialog.Builder b = new AlertDialog.Builder(context);
                                 b.setView(gridView);
                                 b.setTitle("Matches Found");
+                                b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
                                 b.show();
                             }
                         }

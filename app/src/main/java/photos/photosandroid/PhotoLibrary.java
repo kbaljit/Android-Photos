@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class PhotoLibrary implements Serializable{
     private static final long serialVersionUID = 1L;
     private ArrayList<Album> Albums;
-
+    private Album lastSearch;
 
     /**
      * Initializes object with an album list
@@ -27,6 +27,13 @@ public class PhotoLibrary implements Serializable{
         this.Albums=new ArrayList<>();
     }
 
+    public void setLastSearch(Album a){
+        lastSearch = a;
+    }
+
+    public Album getLastSearch(){
+        return lastSearch;
+    }
 
     public void setAlbums(ArrayList<Album> Albums){
 

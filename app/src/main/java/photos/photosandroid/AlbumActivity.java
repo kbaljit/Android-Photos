@@ -128,15 +128,16 @@ public class AlbumActivity extends AppCompatActivity{
                 startActivityForResult(Intent.createChooser(intent,
                         "Select Picture"), 1);
 
-                //photos = photolib.getAlbums().get(p).getPhotos();
                 photoList.setAdapter(ia);
                 photoList.invalidateViews();
                 ia.notifyDataSetChanged();
             }
         });
 
-        Toast.makeText(AlbumActivity.this, "Long click a photo to enable the delete button.",
-                Toast.LENGTH_LONG).show();
+        if(photos.size() > 0) {
+            Toast.makeText(AlbumActivity.this, "Long click a photo to enable the delete button.",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
