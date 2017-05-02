@@ -76,6 +76,17 @@ public class DisplaySearches extends AppCompatActivity{
         pos = b.getInt("GRID_POS");
         AlbumName = b.getString("ALBUM_NAME");
         photo = photoLib.getLastSearch().getPhotos().get(pos);
+        String s=photo.getTitle();
+        String FileName="";
+        if(Uri.parse(photo.getImage())==null){
+            FileName="No Title";
+        }
+        else{
+            FileName = s.substring(s.lastIndexOf("/") + 1);
+        }
+
+        getSupportActionBar().setTitle(FileName);
+
         photoCount = b.getInt("PHOTO_NUM");
         setTagView(photo);
         setImageView(photo);
