@@ -223,6 +223,12 @@ public class Photos extends AppCompatActivity implements Serializable {
                                 for(int a = 0; a < matches.size(); a++){
                                     mFound.addPhoto(matches.get(a));
                                 }
+                                photolib.setLastSearch(mFound);
+                                try {
+                                    writeApp(photolib, context);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                 final GridView gridView = new GridView(context);
                                 final ImageAdapter ia = new ImageAdapter(context);
                                 gridView.setAdapter(ia);
