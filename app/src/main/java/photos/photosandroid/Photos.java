@@ -38,7 +38,6 @@ import java.util.ArrayList;
 public class Photos extends AppCompatActivity implements Serializable {
     ListView albumList;
     PhotoLibrary photolib = new PhotoLibrary();
-    PhotoLibrary searches = new PhotoLibrary();
     ArrayAdapter<String> adapter;
     final Context context=this;
     private String title="";
@@ -72,8 +71,8 @@ public class Photos extends AppCompatActivity implements Serializable {
 
 
         ImageButton addButton=(ImageButton) findViewById(R.id.addButton);
-        ImageButton deleteButton=(ImageButton) findViewById(R.id.deleteButton);
-        ImageButton renameButton=(ImageButton) findViewById(R.id.renameButton);
+        final ImageButton deleteButton=(ImageButton) findViewById(R.id.deleteButton);
+        final ImageButton renameButton=(ImageButton) findViewById(R.id.renameButton);
         ImageButton searchButton=(ImageButton) findViewById(R.id.searchButton);
 
         addButton.setOnClickListener(new View.OnClickListener(){
@@ -130,13 +129,16 @@ public class Photos extends AppCompatActivity implements Serializable {
             }
         });
 
-        deleteButton.setOnClickListener(new View.OnClickListener(){
+        albumList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onClick(View view){
-
-                albumList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           final int pos, long id) {
+                final int position = pos;
+                deleteButton.setVisibility(View.VISIBLE);
+                renameButton.setVisibility(View.VISIBLE);
+                deleteButton.setOnClickListener(new View.OnClickListener(){
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    public void onClick(View view){
                         albums.remove(position);
                         albumNames.remove(position);
                         adapter.notifyDataSetChanged();
@@ -147,13 +149,76 @@ public class Photos extends AppCompatActivity implements Serializable {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        setListener();
-
+                        deleteButton.setVisibility(View.INVISIBLE);
+                        renameButton.setVisibility(View.INVISIBLE);
                     }
-
                 });
-            }
+                renameButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view){
+                        temp=albums.get(position);
 
+                        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                        builder.setTitle("Enter Album Name");
+                        final EditText input=new EditText(context);
+                        builder.setView(input);
+
+                        builder.setPositiveButton("RENAME", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which){
+                                rename=input.getText().toString();
+                                boolean duplicate = false;
+                                if(rename.equals(albums.get(position).getTitle())){
+                                    duplicate = false;
+                                }else {
+                                    for (int i = 0; i < albums.size(); i++) {
+                                        if (rename.equals(albums.get(i).getTitle())) {
+                                            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                                            alertDialog.setTitle("Alert");
+                                            alertDialog.setMessage("Duplicate Album Name, please try again");
+                                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.dismiss();
+                                                        }
+                                                    });
+                                            duplicate = true;
+                                            alertDialog.show();
+                                        }
+                                    }
+                                }
+                                if(duplicate==false) {
+                                    temp.setTitle(rename);
+                                    albums.set(position, temp );
+                                    photolib.setAlbums(albums);
+                                    try {
+                                        writeApp(photolib, context);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    albumNames.set(position, rename);
+                                    adapter.notifyDataSetChanged();
+                                }
+
+
+                            }
+                        });
+
+                        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which){
+                                dialog.cancel();
+                            }
+                        });
+
+                        builder.show();
+                        renameButton.setVisibility(View.INVISIBLE);
+                        deleteButton.setVisibility(View.INVISIBLE);
+                    }
+                });
+
+                return true;
+            }
         });
 
         searchButton.setOnClickListener(new View.OnClickListener(){
@@ -275,63 +340,21 @@ public class Photos extends AppCompatActivity implements Serializable {
 
         });
 
-        renameButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                albumList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                        temp=albums.get(position);
 
-                        AlertDialog.Builder builder=new AlertDialog.Builder(context);
-                        builder.setTitle("Enter Album Name");
-                        final EditText input=new EditText(context);
-                        builder.setView(input);
-
-                        builder.setPositiveButton("RENAME", new DialogInterface.OnClickListener(){
-                            @Override
-                            public void onClick(DialogInterface dialog, int which){
-                                rename=input.getText().toString();
-                                temp.setTitle(rename);
-                                albums.set(position, temp );
-                                photolib.setAlbums(albums);
-                                try {
-                                    writeApp(photolib, context);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                albumNames.set(position, rename);
-                                adapter.notifyDataSetChanged();
-
-                            }
-                        });
-
-                        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
-                            @Override
-                            public void onClick(DialogInterface dialog, int which){
-                                dialog.cancel();
-                            }
-                        });
-
-                        builder.show();
-                        setListener();
-
-                    }
-
-                });
-
-            }
-        });
+        if(albums.size() > 0) {
+            Toast.makeText(Photos.this, "Long click an album to enable the delete/rename buttons.",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     private void displayAlbum(int pos){
-            Bundle bundle=new Bundle();
-            String entry=(String) adapter.getItem(pos);
-            bundle.putString("ALBUM_NAME", entry);
-            bundle.putSerializable("PHOTO_LIB", photolib );
-            Intent intent=new Intent(this, AlbumActivity.class);
-            intent.putExtras(bundle);
-            startActivity(intent);
+        Bundle bundle=new Bundle();
+        String entry=(String) adapter.getItem(pos);
+        bundle.putString("ALBUM_NAME", entry);
+        bundle.putSerializable("PHOTO_LIB", photolib );
+        Intent intent=new Intent(this, AlbumActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     public void setListener(){
