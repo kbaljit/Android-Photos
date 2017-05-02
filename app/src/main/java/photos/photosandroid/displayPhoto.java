@@ -194,6 +194,16 @@ public class displayPhoto extends AppCompatActivity{
                 if(pos==temp.getNumPhotos()-1){
                     pos=0;
                     Photo next=temp.getPhotos().get(pos);
+                    String s=next.getTitle();
+                    String FileName="";
+                    if(Uri.parse(next.getImage())==null){
+                        FileName="No Title";
+                    }
+                    else{
+                        FileName = s.substring(s.lastIndexOf("/") + 1);
+                    }
+
+                    getSupportActionBar().setTitle(FileName);
                     setImageView(next);
                     setTagView(next);
                     photo=next;
@@ -201,6 +211,16 @@ public class displayPhoto extends AppCompatActivity{
                 else{
                     pos++;
                     Photo next=temp.getPhotos().get(pos);
+                    String s=next.getTitle();
+                    String FileName="";
+                    if(Uri.parse(next.getImage())==null){
+                        FileName="No Title";
+                    }
+                    else{
+                        FileName = s.substring(s.lastIndexOf("/") + 1);
+                    }
+
+                    getSupportActionBar().setTitle(FileName);
                     setImageView(next);
                     setTagView(next);
                     photo=next;
