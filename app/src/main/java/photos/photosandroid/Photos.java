@@ -35,6 +35,11 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * @author Milan Patel
+ * @author Baljit Kaur
+ * Homepage of Photos App that lists albums
+ */
 public class Photos extends AppCompatActivity implements Serializable {
     ListView albumList;
     PhotoLibrary photolib = new PhotoLibrary();
@@ -45,6 +50,10 @@ public class Photos extends AppCompatActivity implements Serializable {
     private Album temp;
     ArrayList<Photo> matches;
 
+    /**
+     * Creates Homepage
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -347,6 +356,10 @@ public class Photos extends AppCompatActivity implements Serializable {
         }
     }
 
+    /**
+     * Sends intent to next activity to open album
+     * @param pos
+     */
     private void displayAlbum(int pos){
         Bundle bundle=new Bundle();
         String entry=(String) adapter.getItem(pos);
@@ -357,6 +370,9 @@ public class Photos extends AppCompatActivity implements Serializable {
         startActivity(intent);
     }
 
+    /**
+     * Resets the Listener for Album List
+     */
     public void setListener(){
         albumList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -366,6 +382,12 @@ public class Photos extends AppCompatActivity implements Serializable {
         });
     }
 
+    /**
+     * Serializes Photo Library
+     * @param photoLib
+     * @param context
+     * @throws IOException
+     */
     public static void writeApp(PhotoLibrary photoLib, Context context) throws IOException {
         File outFile = new File(context.getFilesDir(), "library.bin");
         ObjectOutput oos = new ObjectOutputStream(new FileOutputStream(outFile));
@@ -373,6 +395,13 @@ public class Photos extends AppCompatActivity implements Serializable {
         oos.close();
     }
 
+    /**
+     * Reads Serialized Photo Library
+     * @param F
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public static PhotoLibrary readApp(File F) throws IOException, ClassNotFoundException {
         if(F.length() == 0){
             return new PhotoLibrary();
@@ -383,14 +412,32 @@ public class Photos extends AppCompatActivity implements Serializable {
         return photoLib;
     }
 
+    /**
+     * Checks if uri is a Media Document
+     * @param uri
+     * @return
+     */
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
+    /**
+     * Checks if uri is a google photo
+     * @param uri
+     * @return
+     */
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
+    /**
+     * Gets Data Column of selected photo
+     * @param cont
+     * @param uri
+     * @param selection
+     * @param selectionArgs
+     * @return
+     */
     public static String getDataColumn(Context cont, Uri uri, String selection,
                                        String[] selectionArgs) {
 
@@ -414,6 +461,11 @@ public class Photos extends AppCompatActivity implements Serializable {
         return null;
     }
 
+    /**
+     * Gets File path of uri
+     * @param uri
+     * @return
+     */
     public String getPath(Uri uri) {
         if( uri == null ) {
             return null;
@@ -442,6 +494,10 @@ public class Photos extends AppCompatActivity implements Serializable {
         return null;
     }
 
+    /**
+     * @author Baljit Kaur
+     * ImageAdapter Class
+     */
     private class ImageAdapter extends BaseAdapter {
         private Context context;
 

@@ -44,6 +44,10 @@ import static photos.photosandroid.AlbumActivity.getDataColumn;
 import static photos.photosandroid.AlbumActivity.isGooglePhotosUri;
 import static photos.photosandroid.AlbumActivity.isMediaDocument;
 
+/**
+ * @author Baljit Kaur
+ * Creates Photo Display Screen upon clicking search results
+ */
 public class DisplaySearches extends AppCompatActivity{
     TableLayout TTable;
     ImageView ImgView;
@@ -56,7 +60,10 @@ public class DisplaySearches extends AppCompatActivity{
     Album temp=new Album("temp");
 
 
-
+    /**
+     * Creates Photo Display Screen
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,6 +168,10 @@ public class DisplaySearches extends AppCompatActivity{
         });
     }
 
+    /**
+     * Sets Photo in album given photo
+     * @param P
+     */
     public void setPhotoInAlbum(Photo P){
         for(int i=0; i<photoLib.getAlbums().size(); i++){
             if(photoLib.getAlbums().get(i).getTitle().equals(AlbumName)){
@@ -170,6 +181,10 @@ public class DisplaySearches extends AppCompatActivity{
 
     }
 
+    /**
+     * Sets Tag list given a photo
+     * @param P
+     */
     public void setTagView(final Photo P){
         ArrayList<Tag> tags=P.getTags();
         TTable=(TableLayout) findViewById(R.id.TagTable);
@@ -192,6 +207,11 @@ public class DisplaySearches extends AppCompatActivity{
 
     }
 
+    /**
+     * Refreshes last screen upon clicking back button
+     * @param menuItem
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -208,6 +228,11 @@ public class DisplaySearches extends AppCompatActivity{
         }
         return (super.onOptionsItemSelected(menuItem));
     }
+
+    /**
+     * Sets Image View of Display Screen
+     * @param P
+     */
     public void setImageView(Photo P){
         Uri uri=Uri.parse(P.getImage());
         String filePath=getPath(uri);
@@ -216,6 +241,11 @@ public class DisplaySearches extends AppCompatActivity{
 
     }
 
+    /**
+     * Gets File Path of uri
+     * @param uri
+     * @return
+     */
     public String getPath(Uri uri) {
         if( uri == null ) {
             return null;
@@ -244,6 +274,12 @@ public class DisplaySearches extends AppCompatActivity{
         return null;
     }
 
+    /**
+     * Serializes Photo Library
+     * @param photoLib
+     * @param context
+     * @throws IOException
+     */
     public static void writeApp(PhotoLibrary photoLib, Context context) throws IOException {
         File outFile = new File(context.getFilesDir(), "library.bin");
         ObjectOutput oos = new ObjectOutputStream(new FileOutputStream(outFile));
@@ -251,6 +287,13 @@ public class DisplaySearches extends AppCompatActivity{
         oos.close();
     }
 
+    /**
+     * Reads Serialized Photo Library
+     * @param F
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public static PhotoLibrary readApp(File F) throws IOException, ClassNotFoundException {
         if(F.length() == 0){
             return new PhotoLibrary();

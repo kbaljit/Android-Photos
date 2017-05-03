@@ -45,6 +45,10 @@ import static photos.photosandroid.AlbumActivity.getDataColumn;
 import static photos.photosandroid.AlbumActivity.isGooglePhotosUri;
 import static photos.photosandroid.AlbumActivity.isMediaDocument;
 
+/**
+ * @author Milan Patel
+ * Displays Photo once selected from album
+ */
 public class displayPhoto extends AppCompatActivity{
     TableLayout TTable;
     ImageView ImgView;
@@ -57,8 +61,10 @@ public class displayPhoto extends AppCompatActivity{
     int photoCount;
     Album temp=new Album("temp");
 
-
-
+    /**
+     * Creates Photo Display View
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -332,7 +338,12 @@ public class displayPhoto extends AppCompatActivity{
 
     }
 
-
+    /**
+     * Finds Photo Given Album Name and grid position
+     * @param AlbumName
+     * @param pos
+     * @return
+     */
     public Photo findPhotoInAlbum(String AlbumName, int pos){
         for(int i=0; i<photoLib.getAlbums().size(); i++){
             if(photoLib.getAlbums().get(i).getTitle().equals(AlbumName)){
@@ -341,6 +352,11 @@ public class displayPhoto extends AppCompatActivity{
         }
         return null;
     }
+
+    /**
+     * Deletes Photo given grid position
+     * @param pos
+     */
     public void deletePhotoInAlbum(int pos) {
         for (int i = 0; i < photoLib.getAlbums().size(); i++) {
             if (photoLib.getAlbums().get(i).getTitle().equals(AlbumName)) {
@@ -349,6 +365,10 @@ public class displayPhoto extends AppCompatActivity{
         }
     }
 
+    /**
+     * Gets Number of Photos in album
+     * @return
+     */
     public int getNumPhotos(){
         for (int i = 0; i < photoLib.getAlbums().size(); i++) {
             if (photoLib.getAlbums().get(i).getTitle().equals(AlbumName)) {
@@ -358,6 +378,10 @@ public class displayPhoto extends AppCompatActivity{
         return 0;
     }
 
+    /**
+     * Sets Photo in album given Photo
+     * @param P
+     */
     public void setPhotoInAlbum(Photo P){
         for(int i=0; i<photoLib.getAlbums().size(); i++){
             if(photoLib.getAlbums().get(i).getTitle().equals(AlbumName)){
@@ -367,6 +391,10 @@ public class displayPhoto extends AppCompatActivity{
 
     }
 
+    /**
+     * Sets Table of Tag Values given Photo
+     * @param P
+     */
     public void setTagView(final Photo P){
         ArrayList<Tag> tags=P.getTags();
         TTable=(TableLayout) findViewById(R.id.TagTable);
@@ -426,6 +454,11 @@ public class displayPhoto extends AppCompatActivity{
 
     }
 
+    /**
+     * Refreshes GridView of Parent Activity upon clicking back button
+     * @param menuItem
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -442,6 +475,11 @@ public class displayPhoto extends AppCompatActivity{
         }
         return (super.onOptionsItemSelected(menuItem));
     }
+
+    /**
+     * Sets Image View of Display Screen
+     * @param P
+     */
     public void setImageView(Photo P){
         Uri uri=Uri.parse(P.getImage());
         String filePath=getPath(uri);
@@ -450,7 +488,11 @@ public class displayPhoto extends AppCompatActivity{
 
     }
 
-
+    /**
+     * Gets file path of uri
+     * @param uri
+     * @return
+     */
     public String getPath(Uri uri) {
         if( uri == null ) {
             return null;
@@ -479,6 +521,12 @@ public class displayPhoto extends AppCompatActivity{
         return null;
     }
 
+    /**
+     * Serializes PhotoLibrary
+     * @param photoLib
+     * @param context
+     * @throws IOException
+     */
     public static void writeApp(PhotoLibrary photoLib, Context context) throws IOException {
         File outFile = new File(context.getFilesDir(), "library.bin");
         ObjectOutput oos = new ObjectOutputStream(new FileOutputStream(outFile));
@@ -486,6 +534,13 @@ public class displayPhoto extends AppCompatActivity{
         oos.close();
     }
 
+    /**
+     * Reads Serialized Library
+     * @param F
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public static PhotoLibrary readApp(File F) throws IOException, ClassNotFoundException {
         if(F.length() == 0){
             return new PhotoLibrary();

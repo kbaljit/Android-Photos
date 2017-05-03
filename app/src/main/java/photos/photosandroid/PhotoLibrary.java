@@ -27,19 +27,35 @@ public class PhotoLibrary implements Serializable{
         this.Albums=new ArrayList<>();
     }
 
+    /**
+     * Sets the last searched album
+     * @param a
+     */
     public void setLastSearch(Album a){
         lastSearch = a;
     }
 
+    /**
+     * Gets the last searched album
+     * @return
+     */
     public Album getLastSearch(){
         return lastSearch;
     }
 
+    /**
+     * Sets Album List to given Albums list
+     * @param Albums
+     */
     public void setAlbums(ArrayList<Album> Albums){
 
         this.Albums=Albums;
     }
 
+    /**
+     * Gets Albums List
+     * @return
+     */
     public ArrayList<Album> getAlbums(){
         if(Albums==null){
             return new ArrayList<Album>();
