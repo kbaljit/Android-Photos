@@ -50,6 +50,9 @@ public class Photo implements Serializable{
         return title;
     }
 
+    public void setTitle(String title){
+        this.title=title;
+    }
 
     /**
      * Adds new tag to photo

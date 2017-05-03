@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -49,7 +50,12 @@ public class AlbumActivity extends AppCompatActivity{
     int p;
     ImageAdapter ia;
     Bundle b;
+    Uri selectedImageUri;
 
+    /**
+     * Creates Thumbnail Grid of Photos
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,13 +146,20 @@ public class AlbumActivity extends AppCompatActivity{
         }
     }
 
+    /**
+     * Upon Selecting a Photo from Gallery, createa and adds photo instance to library
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == 1 && data != null && data.getData() != null) {
-                Uri selectedImageUri = data.getData();
+                selectedImageUri = data.getData();
                 String stringUri=selectedImageUri.toString();
                 Photo photo = new Photo(stringUri);
+                photo.setTitle(getPath(selectedImageUri));
                 photos.add(photo);
                 photoList.setAdapter(ia);
                 photoList.invalidateViews();
@@ -163,6 +176,11 @@ public class AlbumActivity extends AppCompatActivity{
         ia.notifyDataSetChanged();
     }
 
+    /**
+     * Retrives Path of uri file
+     * @param uri
+     * @return
+     */
     public String getPath(Uri uri) {
         if( uri == null ) {
             return null;
@@ -191,14 +209,32 @@ public class AlbumActivity extends AppCompatActivity{
         return null;
     }
 
+    /**
+     * Checks if uri is of a Media Document
+     * @param uri
+     * @return
+     */
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
+    /**
+     * Checks if uri is a google photo
+     * @param uri
+     * @return
+     */
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
+    /**
+     * Retrives Data Column of Photo by uri
+     * @param cont
+     * @param uri
+     * @param selection
+     * @param selectionArgs
+     * @return
+     */
     public static String getDataColumn(Context cont, Uri uri, String selection,
                                        String[] selectionArgs) {
 
@@ -222,6 +258,12 @@ public class AlbumActivity extends AppCompatActivity{
         return null;
     }
 
+    /**
+     * Serializes Photo Library
+     * @param photoLib
+     * @param context
+     * @throws IOException
+     */
     public static void writeApp(PhotoLibrary photoLib, Context context) throws IOException {
         File outFile = new File(context.getFilesDir(), "library.bin");
         ObjectOutput oos = new ObjectOutputStream(new FileOutputStream(outFile));
@@ -229,6 +271,10 @@ public class AlbumActivity extends AppCompatActivity{
         oos.close();
     }
 
+    /**
+     * Image Adapter Class
+     * @author Baljit Kaur
+     */
     private class ImageAdapter extends BaseAdapter {
         private Context context;
 
